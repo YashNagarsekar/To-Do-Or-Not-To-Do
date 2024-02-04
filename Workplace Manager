@@ -1,0 +1,61 @@
+class Task:
+    def _init_(self, description, urgency, importance, estimated_time):
+        self.description = description
+        self.urgency = urgency
+        self.importance = importance
+        self.estimated_time = estimated_time
+        self.priority = 0  # Initialize priority
+
+    def calculate_priority(self):
+        # Basic scoring system (adjust weights as needed)
+        urgency_weight = 2
+        importance_weight = 3
+        time_weight = 1
+
+        self.priority = (urgency_weight * self.urgency +
+                         importance_weight * self.importance +
+                         time_weight / self.estimated_time)
+
+class ToDoList:
+    def _init_(self):
+        self.tasks = []
+
+    def add_task(self, task):
+        task.calculate_priority()  # Calculate priority when adding a task
+        self.tasks.append(task)
+
+    def view_tasks(self):
+        if not self.tasks:
+            print("No tasks in the To-Do List.")
+        else:
+            print("To-Do List (Priority Order):")
+            sorted_tasks = sorted(self.tasks, key=lambda x: x.priority, reverse=True)
+            for index, task in enumerate(sorted_tasks, start=1):
+                print(f"{index}. {task.description} (Priority: {task.priority:.2f})")
+
+    def remove_task(self, task_index):
+        if 1 <= task_index <= len(self.tasks):
+            removed_task = self.tasks.pop(task_index - 1)
+            print(f"Task removed: {removed_task.description}")
+        else:
+            print("Invalid task index. Please try again.")
+
+# Example usage with task prioritization
+if _name_ == "_main_":
+    todo_list = ToDoList()
+
+    task1 = Task("Complete project proposal", 3, 3, 3)
+    task2 = Task("Respond to urgent emails", 2, 2, 1)
+    task3 = Task("Review meeting agenda", 1, 1, 2)
+
+    todo_list.add_task(task1)
+    todo_list.add_task(task2)
+    todo_list.add_task(task3)
+
+    todo_list.view_tasks()
+
+    task_to_remove = int(input("Enter the index of the task to remove (or 0 to skip): "))
+    if task_to_remove != 0:
+        todo_list.remove_task(task_to_remove)
+
+    todo_list.view_tasks()
